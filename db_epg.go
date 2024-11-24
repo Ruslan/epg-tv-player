@@ -88,11 +88,12 @@ func (loader *DbEpg) ParseChannels() {
 		} else {
 			// Create the new channel in the database
 			createResult := loader.db.Create(&newChannel)
-			loader.channelsIds[existingChannel.TvgID] = existingChannel.ID
 
 			// Check for errors during the create operation
 			if createResult.Error != nil {
 				fmt.Println("Error occurred during create:", createResult.Error)
+			} else {
+				loader.channelsIds[newChannel.TvgID] = newChannel.ID
 			}
 		}
 	}
@@ -171,10 +172,14 @@ func (loader *DbEpg) LoadProgramme(programme *epg.Programme) {
 		Title:       programme.Title.Value,
 		TitleLower:  strings.ToLower(programme.Title.Value),
 		Desc:        programme.Desc.Value,
+		DescLower:   strings.ToLower(programme.Desc.Value),
 		Start:       start,
 		Stop:        stop,
 		ChannelCode: programme.Channel,
 		ChannelId:   loader.channelsIds[programme.Channel],
+	}
+	if newVideo.ChannelId == 0 {
+		log.Fatalf("%v is zero channeId", newVideo)
 	}
 	var existingVideo *Video
 

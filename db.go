@@ -6,7 +6,6 @@ import (
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 type Channel struct {
@@ -27,6 +26,7 @@ type Video struct {
 	Title       string
 	TitleLower  string
 	Desc        string
+	DescLower   string
 	Start       time.Time `gorm:"index"`
 	Stop        time.Time `gorm:"index"`
 	ChannelId   uint
@@ -40,7 +40,7 @@ func setupDb() {
 	// Connect to SQLite database
 	var err error
 	db, err = gorm.Open(sqlite.Open("tv.db"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		// Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
 		panic("failed to connect database")
