@@ -12,11 +12,11 @@ import (
 var assets embed.FS
 
 func main() {
+	setupDb()
 	// Create an instance of the app structure
-	app := NewApp()
+	app := NewApp(db)
 
 	go func() {
-		setupDb()
 		loader := &DbEpg{db: db}
 		loader.LoadAndParse()
 	}()
