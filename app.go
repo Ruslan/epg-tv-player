@@ -36,6 +36,14 @@ type ChannelResponse struct {
 	ID    uint   `json:"id"`
 	TvgID string `json:"tvg_id"`
 }
+type VideoResponse struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+type VideoRequest struct {
+	Page    int `json:"page"`
+	PerPage int `json:"per_page"`
+}
 
 func (app *App) FetchChannels() (map[string]interface{}, error) {
 	var channels []Channel
@@ -67,4 +75,33 @@ func (app *App) FetchChannels() (map[string]interface{}, error) {
 		"channels":    channelsResponse,
 		"totalVideos": videoCount,
 	}, nil
+}
+func (app *App) FetchVideos() (map[string]interface{}, error) {
+	var req VideoRequest
+	var q string
+	var videosResponse []VideoResponse
+	videos, err := GetVideosByQuery(app.DB, q, &req)
+	if err != nil {
+		return nil, err
+	}
+	for _, video := range *videos {
+		videosResponse = append(videosResponse, VideoResponse{
+			Title:       video.Title,
+			Description: video.Desc,
+		})
+	}
+	return map[string]interface{}{
+		"videos": videosResponse,
+	}, nil
+
+}
+func GetVideosByQuery(db *gorm.DB, query string, videoRequest *VideoRequest) (*[]Video, error) {
+	var videos []Video
+	searchQuery := fmt.Sprintf("%%%s%%", query)
+	err := db.Where("lower(title_lower) LIKE ? OR lower(desc_lower) LIKE ?", searchQuery, searchQuery).
+		Order("start ASC").
+		Limit(videoRequest.PerPage).
+		Offset(videoRequest.Page*videoRequest.PerPage + 1).
+		Find(&videos).Error
+	return &videos, err
 }
