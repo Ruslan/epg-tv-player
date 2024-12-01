@@ -36,10 +36,6 @@ type ChannelResponse struct {
 	ID    uint   `json:"id"`
 	TvgID string `json:"tvg_id"`
 }
-type VideoResponse struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
 type VideoRequest struct {
 	Page    int `json:"page"`
 	PerPage int `json:"per_page"`
@@ -76,23 +72,12 @@ func (app *App) FetchChannels() (map[string]interface{}, error) {
 		"totalVideos": videoCount,
 	}, nil
 }
-func (app *App) FetchVideos() (map[string]interface{}, error) {
-	var req VideoRequest
-	var q string
-	var videosResponse []VideoResponse
+func (app *App) FetchVideos(req VideoRequest, q string) (*[]Video, error) {
 	videos, err := GetVideosByQuery(app.DB, q, &req)
 	if err != nil {
 		return nil, err
 	}
-	for _, video := range *videos {
-		videosResponse = append(videosResponse, VideoResponse{
-			Title:       video.Title,
-			Description: video.Desc,
-		})
-	}
-	return map[string]interface{}{
-		"videos": videosResponse,
-	}, nil
+	return videos, nil
 
 }
 func GetVideosByQuery(db *gorm.DB, query string, videoRequest *VideoRequest) (*[]Video, error) {
