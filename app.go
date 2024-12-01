@@ -86,7 +86,7 @@ func GetVideosByQuery(db *gorm.DB, query string, videoRequest *VideoRequest) (*[
 	err := db.Where("lower(title_lower) LIKE ? OR lower(desc_lower) LIKE ?", searchQuery, searchQuery).
 		Order("start ASC").
 		Limit(videoRequest.PerPage).
-		Offset(videoRequest.Page*videoRequest.PerPage + 1).
+		Offset(videoRequest.Page * videoRequest.PerPage).
 		Find(&videos).Error
 	return &videos, err
 }
