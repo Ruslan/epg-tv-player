@@ -41,7 +41,9 @@ func TestFetchVideos(t *testing.T) {
 		{"Query Matches Title", VideoRequest{Page: 0, PerPage: 2}, "test", 2},
 		{"Query Matches Description", VideoRequest{Page: 0, PerPage: 2}, "description", 2},
 		{"Query Matches Nothing", VideoRequest{Page: 0, PerPage: 2}, "no-match", 0},
-		{"Pagination Test", VideoRequest{Page: 1, PerPage: 1}, "test", 1},
+		{"Pagination Test1", VideoRequest{Page: 0, PerPage: 1}, "test", 1},
+		{"Pagination Test2", VideoRequest{Page: 1, PerPage: 1}, "test", 1},
+		{"Pagination Test3", VideoRequest{Page: 2, PerPage: 1}, "test", 0},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
