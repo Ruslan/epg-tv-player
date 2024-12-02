@@ -11,6 +11,8 @@ const root = createRoot(container)
 
 export const StoreContext = createContext(appStore);
 
+appStore.reloadChannels()
+
 root.render(
     <React.StrictMode>
         <StoreContext.Provider value={appStore}>

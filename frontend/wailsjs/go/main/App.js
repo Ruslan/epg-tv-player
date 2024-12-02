@@ -6,6 +6,10 @@ export function FetchChannels() {
   return window['go']['main']['App']['FetchChannels']();
 }
 
+export function FetchVideos(arg1, arg2) {
+  return window['go']['main']['App']['FetchVideos'](arg1, arg2);
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
