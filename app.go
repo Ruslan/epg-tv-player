@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -80,8 +81,9 @@ func (app *App) FetchVideos(req VideoRequest, q string) (*[]Video, error) {
 	return videos, nil
 
 }
-func getVideosByQuery(db *gorm.DB, query string, videoRequest *VideoRequest) (*[]Video, error) {
+func getVideosByQuery(db *gorm.DB, q string, videoRequest *VideoRequest) (*[]Video, error) {
 	var videos []Video
+	query := strings.ToLower(q)
 	searchQuery := fmt.Sprintf("%%%s%%", query)
 	err := db.Where("lower(title_lower) LIKE ? OR lower(desc_lower) LIKE ?", searchQuery, searchQuery).
 		Order("start ASC").
