@@ -26,6 +26,11 @@ func AddDefaultSettings(db *gorm.DB, keys ...string) {
 		db.Create(&SettingsApp{Key: key, Value: "default"})
 	}
 }
-func AddNewSettings(key string, value string, db *gorm.DB) {
+func SetSettings(key string, value string, db *gorm.DB) {
 	db.Model(SettingsApp{}).Where("key = ?", key).Update("value", value)
+}
+func GetSettings(key string, db *gorm.DB) string {
+	var set SettingsApp
+	db.Where("key = ?", key).First(&set)
+	return set.Value
 }
