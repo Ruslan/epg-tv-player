@@ -92,3 +92,20 @@ func getVideosByQuery(db *gorm.DB, q string, videoRequest *VideoRequest) (*[]Vid
 		Find(&videos).Error
 	return &videos, err
 }
+func (a *App) SetSetting(key string, value string) {
+	var val SettingsApp
+	a.DB.Where("key = ?", key).First(&val)
+	if val.Value == "" {
+		var set SettingsApp
+		set.Value = value
+		set.Key = key
+		a.DB.Create(&set)
+	} else {
+		a.DB.Model(&SettingsApp{}).Where("key = ?", key).Update("value", value)
+	}
+}
+func (a *App) GetSetting(key string) string {
+	var val SettingsApp
+	a.DB.Where("key = ?", key).First(&val)
+	return val.Value
+}
