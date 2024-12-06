@@ -33,6 +33,11 @@ type Video struct {
 	Channel     Channel
 	ChannelCode string `gorm:"index"`
 }
+type SettingsApp struct {
+	id    int    `gorm:"primaryKey"`
+	Key   string `gorm:"type:text"`
+	Value string `gorm:"type:text"`
+}
 
 var db *gorm.DB
 
@@ -49,7 +54,7 @@ func setupDb() {
 	// Auto migrate
 	db.AutoMigrate(&Channel{})
 	db.AutoMigrate(&Video{})
-
+	db.AutoMigrate(&SettingsApp{})
 	var channelNames []string
 	result := db.Model(&Channel{}).Pluck("title", &channelNames)
 
