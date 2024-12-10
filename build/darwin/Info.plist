@@ -59,5 +59,11 @@
           {{end}}
         </array>
         {{end}}
+        <!-- TODO: remove it to allow only local proxied stream -->
+        <key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSAllowsArbitraryLoads</key>
+            <true/>
+        </dict>
     </dict>
 </plist>
