@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -94,15 +95,17 @@ func getVideosByQuery(db *gorm.DB, q string, videoRequest *VideoRequest) (*[]Vid
 }
 func (a *App) SetSetting(key string, value string) {
 	var val SettingsApp
-	a.DB.Where("key = ?", key).First(&val)
-	if val.Value == "" {
+	err := a.DB.Where("key = ?", key).First(&val).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		var set SettingsApp
 		set.Value = value
 		set.Key = key
 		a.DB.Create(&set)
-	} else {
-		a.DB.Model(&SettingsApp{}).Where("key = ?", key).Update("value", value)
+		return
+	} else if err != nil {
+		panic(err)
 	}
+	a.DB.Model(&SettingsApp{}).Where("key = ?", key).Update("value", value)
 }
 func (a *App) GetSetting(key string) string {
 	var val SettingsApp

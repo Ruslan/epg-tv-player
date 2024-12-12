@@ -62,6 +62,7 @@ func TestSetGetSetting(t *testing.T) {
 		val      string
 		expected string
 	}{
+		{"set empty", "theme", "", ""},
 		{"set and get setting", "theme", "black", "black"},
 		{"update and get setting", "theme", "white", "white"},
 	}
@@ -69,4 +70,7 @@ func TestSetGetSetting(t *testing.T) {
 		app.SetSetting(tc.key, tc.val)
 		assert.Equal(t, tc.expected, app.GetSetting(tc.key))
 	}
+	var count int64
+	db.Model(&SettingsApp{}).Count(&count)
+	assert.Equal(t, count, int64(1))
 }
