@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -80,8 +82,9 @@ func (app *App) FetchVideos(req VideoRequest, q string) (*[]Video, error) {
 	return videos, nil
 
 }
-func getVideosByQuery(db *gorm.DB, query string, videoRequest *VideoRequest) (*[]Video, error) {
+func getVideosByQuery(db *gorm.DB, q string, videoRequest *VideoRequest) (*[]Video, error) {
 	var videos []Video
+	query := strings.ToLower(q)
 	searchQuery := fmt.Sprintf("%%%s%%", query)
 	err := db.Where("lower(title_lower) LIKE ? OR lower(desc_lower) LIKE ?", searchQuery, searchQuery).
 		Order("start ASC").
@@ -89,4 +92,23 @@ func getVideosByQuery(db *gorm.DB, query string, videoRequest *VideoRequest) (*[
 		Offset(videoRequest.Page * videoRequest.PerPage).
 		Find(&videos).Error
 	return &videos, err
+}
+func (a *App) SetSetting(key string, value string) {
+	var val SettingsApp
+	err := a.DB.Where("key = ?", key).First(&val).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		var set SettingsApp
+		set.Value = value
+		set.Key = key
+		a.DB.Create(&set)
+		return
+	} else if err != nil {
+		panic(err)
+	}
+	a.DB.Model(&SettingsApp{}).Where("key = ?", key).Update("value", value)
+}
+func (a *App) GetSetting(key string) string {
+	var val SettingsApp
+	a.DB.Where("key = ?", key).First(&val)
+	return val.Value
 }

@@ -14,6 +14,7 @@ func setupTestDB(t *testing.T) *gorm.DB {
 		t.Fatalf("Failed to open test database: %v", err)
 	}
 	err = db.AutoMigrate(&Video{})
+	db.AutoMigrate(&SettingsApp{})
 	if err != nil {
 		t.Fatalf("Failed to migrate test database: %v", err)
 	}
@@ -27,7 +28,6 @@ func setupTestDB(t *testing.T) *gorm.DB {
 	}
 	return db
 }
-
 func TestFetchVideos(t *testing.T) {
 	db := setupTestDB(t)
 	app := NewApp(db)
@@ -52,4 +52,25 @@ func TestFetchVideos(t *testing.T) {
 			assert.Len(t, *videos, tc.expected)
 		})
 	}
+}
+func TestSetGetSetting(t *testing.T) {
+	db := setupTestDB(t)
+	app := NewApp(db)
+	tests := []struct {
+		name     string
+		key      string
+		val      string
+		expected string
+	}{
+		{"set empty", "theme", "", ""},
+		{"set and get setting", "theme", "black", "black"},
+		{"update and get setting", "theme", "white", "white"},
+	}
+	for _, tc := range tests {
+		app.SetSetting(tc.key, tc.val)
+		assert.Equal(t, tc.expected, app.GetSetting(tc.key))
+	}
+	var count int64
+	db.Model(&SettingsApp{}).Count(&count)
+	assert.Equal(t, count, int64(1))
 }
