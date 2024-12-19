@@ -11,6 +11,8 @@ const root = createRoot(container)
 
 export const StoreContext = createContext(appStore);
 
+window.store = appStore
+
 appStore.reloadChannels()
 
 root.render(

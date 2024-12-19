@@ -5,6 +5,7 @@ import Channel from "./pages/Channel";
 import Videos from "./pages/Videos";
 import Header from "./components/Header";
 import Settings from "./pages/Settings";
+import VideosShow from "./pages/VideosShow";
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/channel/:slug" element={<Channel />} />
                 <Route path="/videos" element={<Videos />} />
+                <Route path="/videos/:slug" element={<VideosShow />} />
                 <Route path="/settings" element={<Settings />} />
             </Routes>
         </Router>
