@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { FetchChannels, FetchVideos } from "../../wailsjs/go/main/App";
+import { FetchChannels, FetchVideos, SetSetting, GetSetting } from "../../wailsjs/go/main/App";
 
 class AppStore {
   totalChannels = 0;
@@ -14,6 +14,7 @@ class AppStore {
 
   constructor() {
     makeAutoObservable(this); // Makes state reactive
+    GetSetting("LiveStreamUrlTemplate").then((v) => this.setLiveStreamUrlTemplate(v))
   }
 
   setChannels(channels) {
@@ -35,10 +36,12 @@ class AppStore {
 
   setLiveStreamUrlTemplate(url) {
     this.liveStreamUrlTemplate = url;
+    SetSetting("LiveStreamUrlTemplate", url)
   }
 
   setVodUrlTemplate(url) {
     this.vodUrlTemplate = url;
+    SetSetting("VodUrlTemplate", url)
   }
 
   reloadChannels() {
@@ -49,7 +52,7 @@ class AppStore {
   }
 
   loadVideos(query) {
-    FetchVideos({page: 1, per_page: 50},query).then((result) => {
+    FetchVideos({ page: 1, per_page: 50 }, query).then((result) => {
       this.setVideos(result)
     })
   }

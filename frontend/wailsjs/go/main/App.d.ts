@@ -6,4 +6,8 @@ export function FetchChannels():Promise<{[key: string]: any}>;
 
 export function FetchVideos(arg1:main.VideoRequest,arg2:string):Promise<any>;
 
+export function GetSetting(arg1:string):Promise<string>;
+
 export function Greet(arg1:string):Promise<string>;
+
+export function SetSetting(arg1:string,arg2:string):Promise<void>;

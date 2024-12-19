@@ -10,6 +10,14 @@ export function FetchVideos(arg1, arg2) {
   return window['go']['main']['App']['FetchVideos'](arg1, arg2);
 }
 
+export function GetSetting(arg1) {
+  return window['go']['main']['App']['GetSetting'](arg1);
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
+}
+
+export function SetSetting(arg1, arg2) {
+  return window['go']['main']['App']['SetSetting'](arg1, arg2);
 }
