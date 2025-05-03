@@ -14,22 +14,17 @@ const debounce = (func, delay) => {
 
 const Videos = observer(() => {
   const appStore = useContext(StoreContext);
-  const [query, setQuery] = useState(appStore.videosSearchString || ""); // Local state for the input
-
-  const doSearch = useCallback(
-    debounce((value) => appStore.loadVideos(value), 500),
-    []
-  );
 
   const handleInputChange = (e) => {
-    const newQuery = e.target.value; // Read the input value
-    setQuery(newQuery); // Update local state
-    appStore.setVideosSearchString(newQuery); // Update the search string in the store
-    doSearch(newQuery); // Trigger the debounced search
+    appStore.setVideosSearchString(e.target.value);
   };
 
+  const handleInputChannelChange = (e) => {
+    appStore.videosSearchChannelString = e.target.value
+  }
+
   const handleSearchClick = () => {
-    appStore.loadVideos(query); // Immediate search on button click
+    appStore.loadVideos(); // Immediate search on button click
   };
 
   return (
@@ -42,6 +37,12 @@ const Videos = observer(() => {
         onChange={handleInputChange}
       />
       <button onClick={handleSearchClick}>Search</button>
+      <input
+        type="search"
+        placeholder="Channel"
+        value={appStore.videosSearchChannelString}
+        onChange={handleInputChannelChange}
+      />
       <ul>
         {appStore.videos.map((video) => {
           const channel = appStore.channels.find((ch) => ch.id === video.ChannelId);

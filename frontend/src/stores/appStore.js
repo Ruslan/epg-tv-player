@@ -8,6 +8,7 @@ class AppStore {
 
   videos = [];
   videosSearchString = "";
+  videosSearchChannelString = "";
 
   liveStreamUrlTemplate = "";
   vodUrlTemplate = "";
@@ -51,8 +52,9 @@ class AppStore {
     })
   }
 
-  loadVideos(query) {
-    FetchVideos({ page: 1, per_page: 50 }, query).then((result) => {
+  loadVideos() {
+    if (this.videosSearchString == '') return
+    FetchVideos({ page: 1, per_page: 50 }, this.videosSearchString, this.videosSearchChannelString).then((result) => {
       this.setVideos(result)
     })
   }

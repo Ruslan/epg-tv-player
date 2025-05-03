@@ -74,22 +74,31 @@ func (app *App) FetchChannels() (map[string]interface{}, error) {
 		"totalVideos": videoCount,
 	}, nil
 }
-func (app *App) FetchVideos(req VideoRequest, q string) (*[]Video, error) {
-	videos, err := getVideosByQuery(app.DB, q, &req)
+func (app *App) FetchVideos(req VideoRequest, q string, chq string) (*[]Video, error) {
+	videos, err := getVideosByQuery(app.DB, q, chq, &req)
 	if err != nil {
 		return nil, err
 	}
 	return videos, nil
 
 }
-func getVideosByQuery(db *gorm.DB, q string, videoRequest *VideoRequest) (*[]Video, error) {
+func getVideosByQuery(db *gorm.DB, q string, chq string, videoRequest *VideoRequest) (*[]Video, error) {
 	var videos []Video
 	query := strings.ToLower(q)
 	searchQuery := fmt.Sprintf("%%%s%%", query)
-	err := db.Where("lower(title_lower) LIKE ? OR lower(desc_lower) LIKE ?", searchQuery, searchQuery).
+
+	baseScope := db.Where("title_lower LIKE ? OR desc_lower LIKE ?", searchQuery, searchQuery)
+
+	if len(chq) > 0 {
+		chq = strings.ToLower(chq)
+		chq = fmt.Sprintf("%%%s%%", chq)
+		baseScope = baseScope.Where("channel_code like ?", chq)
+	}
+
+	err := baseScope.
 		Order("start ASC").
 		Limit(videoRequest.PerPage).
-		Offset(videoRequest.Page * videoRequest.PerPage).
+		Offset((videoRequest.Page - 1) * videoRequest.PerPage).
 		Find(&videos).Error
 	return &videos, err
 }

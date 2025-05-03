@@ -6,8 +6,8 @@ export function FetchChannels() {
   return window['go']['main']['App']['FetchChannels']();
 }
 
-export function FetchVideos(arg1, arg2) {
-  return window['go']['main']['App']['FetchVideos'](arg1, arg2);
+export function FetchVideos(arg1, arg2, arg3) {
+  return window['go']['main']['App']['FetchVideos'](arg1, arg2, arg3);
 }
 
 export function GetSetting(arg1) {
