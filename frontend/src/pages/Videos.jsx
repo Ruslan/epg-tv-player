@@ -43,6 +43,12 @@ const Videos = observer(() => {
         value={appStore.videosSearchChannelString}
         onChange={handleInputChannelChange}
       />
+      <input
+        type="text"
+        placeholder="Page"
+        value={appStore.currentPage}
+        onChange={(e) => appStore.currentPage = e.target.value}
+      />
       <ul>
         {appStore.videos.map((video) => {
           const channel = appStore.channels.find((ch) => ch.id === video.ChannelId);

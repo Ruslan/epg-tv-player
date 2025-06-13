@@ -13,6 +13,8 @@ class AppStore {
   liveStreamUrlTemplate = "";
   vodUrlTemplate = "";
 
+  currentPage = 1
+
   constructor() {
     makeAutoObservable(this); // Makes state reactive
     GetSetting("LiveStreamUrlTemplate").then((v) => this.setLiveStreamUrlTemplate(v))
@@ -54,7 +56,7 @@ class AppStore {
 
   loadVideos() {
     if (this.videosSearchString == '') return
-    FetchVideos({ page: 1, per_page: 50 }, this.videosSearchString, this.videosSearchChannelString).then((result) => {
+    FetchVideos({ page: parseInt(this.currentPage) || 1, per_page: 50 }, this.videosSearchString, this.videosSearchChannelString).then((result) => {
       this.setVideos(result)
     })
   }

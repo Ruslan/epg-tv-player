@@ -85,6 +85,7 @@ func (app *App) FetchVideos(req VideoRequest, q string, chq string) (*[]Video, e
 func getVideosByQuery(db *gorm.DB, q string, chq string, videoRequest *VideoRequest) (*[]Video, error) {
 	var videos []Video
 	query := strings.ToLower(q)
+	query = strings.ReplaceAll(query, " ", "%")
 	searchQuery := fmt.Sprintf("%%%s%%", query)
 
 	baseScope := db.Where("title_lower LIKE ? OR desc_lower LIKE ?", searchQuery, searchQuery)

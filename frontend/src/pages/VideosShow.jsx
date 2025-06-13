@@ -18,7 +18,7 @@ const VideosShow = observer(() => {
     return <p>Video not found</p>;
   }
 
-  const streamUrl = appStore.liveStreamUrlTemplate.replace("{tvg_id}", channel.tvg_id) + `?utc=${Date.parse(store.videos[0].Start) / 1000}`
+  const streamUrl = appStore.liveStreamUrlTemplate.replace("{tvg_id}", channel.tvg_id) + `?utc=${Date.parse(video.Start) / 1000}`
 
   return (
     <main>
